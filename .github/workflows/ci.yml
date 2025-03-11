@@ -12,6 +12,7 @@ jobs:
           - 27.2
           - 28.2
           - snapshot
+      fail-fast: false
     steps:
       - uses: actions/checkout@v3
       - name: Install Emacs
@@ -24,11 +25,20 @@ jobs:
             --eval "(add-to-list 'package-archives '(\"melpa\" . \"https://melpa.org/packages/\"))" \
             --eval "(package-refresh-contents)" \
             --eval "(package-install 'package-lint)" \
+            || true
+          emacs --batch -l package --eval "(package-initialize)" \
+            --eval "(add-to-list 'package-archives '(\"melpa\" . \"https://melpa.org/packages/\"))" \
+            --eval "(package-refresh-contents)" \
             --eval "(package-install 'magit)" \
-            --eval "(package-install 'transient)"
+            || true
+          emacs --batch -l package --eval "(package-initialize)" \
+            --eval "(add-to-list 'package-archives '(\"melpa\" . \"https://melpa.org/packages/\"))" \
+            --eval "(package-refresh-contents)" \
+            --eval "(package-install 'transient)" \
+            || true
       - name: Lint
         run: emacs --batch -l package-lint -f package-lint-batch-and-exit link-to-remote.el
       - name: Byte Compile
         run: emacs --batch -L . --eval "(setq byte-compile-error-on-warn t)" -f batch-byte-compile link-to-remote.el
       - name: Test
-        run: emacs --batch -L . -l ert -l link-to-remote.el -l link-to-remote-test.el -f ert-run-tests-batch-and-exit
+        run: emacs --batch -L . -l ert -l cl-lib -l link-to-remote.el -l link-to-remote-test.el -f ert-run-tests-batch-and-exit
