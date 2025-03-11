@@ -1,8 +1,8 @@
 ;;; link-to-remote.el --- Link current file to its remote repository -*- lexical-binding: t; -*-
 
-;; Author: Jackson Sigman <jackson@anthropic.com>
+;; Author: John Sigman
 ;; Version: 0.1.0
-;; Package-Requires: ((emacs "26.1") (magit "3.0") (transient "0.3.0"))
+;; Package-Requires: ((emacs "26.1") (magit "3.0") (transient "0.3.0") (cl-lib "0.5"))
 ;; Keywords: tools, git, convenience
 ;; URL: https://github.com/jsigman/link-to-remote
 
@@ -33,7 +33,8 @@
         (format "https://bitbucket.org/%s" (match-string 1 remote)))
        ((string-match "https://bitbucket.org/\\(.*\\)\\.git" remote)
         (format "https://bitbucket.org/%s" (match-string 1 remote)))
-       (t (error "Unsupported remote URL format: %s" remote))))))
+       (t
+        (error "Unsupported remote URL format: %s" remote))))))
 
 (defun link-to-remote--get-file-path ()
   "Get the relative file path from the repository root."
@@ -47,7 +48,10 @@
   "Prompt for a branch to link to, defaulting to the current branch."
   (let ((branches (magit-list-branch-names))
         (current-branch (magit-get-current-branch)))
-    (completing-read "Select branch: " branches nil t current-branch)))
+    (completing-read "Select branch: " branches
+                     nil
+                     t
+                     current-branch)))
 
 (defun link-to-remote--get-line-info ()
   "Get line number or range if region is active."
@@ -64,17 +68,25 @@
 If WITHOUT-LINE is non-nil, don't include line number information."
   (let* ((repo-url (link-to-remote--get-repo-url))
          (file-path (link-to-remote--get-file-path))
-         (line-info (unless without-line (link-to-remote--get-line-info))))
-    (format "%s/blob/%s/%s%s" repo-url branch file-path (or line-info ""))))
+         (line-info
+          (unless without-line
+            (link-to-remote--get-line-info))))
+    (format "%s/blob/%s/%s%s"
+            repo-url
+            branch
+            file-path
+            (or line-info ""))))
 
 ;;;###autoload
-(transient-define-prefix link-to-remote ()
-  "Open or manage a link to the current file on its remote repository."
-  ["Link to Remote"
-   ("o" "Open in browser" link-to-remote-open)
-   ("e" "Echo to messages" link-to-remote-echo)
-   ("k" "Copy to kill ring" link-to-remote-kill)
-   ("p" "Copy plain URL (no line numbers)" link-to-remote-kill-plain)])
+(transient-define-prefix
+ link-to-remote
+ ()
+ "Open or manage a link to the current file on its remote repository."
+ ["Link to Remote"
+  ("o" "Open in browser" link-to-remote-open)
+  ("e" "Echo to messages" link-to-remote-echo)
+  ("k" "Copy to kill ring" link-to-remote-kill)
+  ("p" "Copy plain URL (no line numbers)" link-to-remote-kill-plain)])
 
 (defun link-to-remote--dispatch (action)
   "Dispatch ACTION on the constructed URL with branch selection."
@@ -84,8 +96,11 @@ If WITHOUT-LINE is non-nil, don't include line number information."
     (pcase action
       ('open (browse-url url))
       ('echo (message "Link: %s" url))
-      ('kill (kill-new url) (message "Link copied to kill ring: %s" url))
-      ('plain (kill-new url) (message "Plain link copied to kill ring: %s" url))
+      ('kill
+       (kill-new url) (message "Link copied to kill ring: %s" url))
+      ('plain
+       (kill-new url)
+       (message "Plain link copied to kill ring: %s" url))
       (_ (error "Unknown action: %s" action)))))
 
 ;;;###autoload
