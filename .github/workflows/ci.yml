@@ -7,41 +7,6 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        emacs_version:
-          - 26.3
-          - 27.2
-          - 28.2
-          - 29.1
-      fail-fast: false
-
-    steps:
-    - uses: actions/checkout@v3
-
-    - name: Set up Emacs
-      uses: purcell/setup-emacs@master
-      with:
-        version: ${{ matrix.emacs_version }}
-
-    - name: Install dependencies
-      run: |
-        emacs -batch --eval "(require 'package)" \
-              --eval "(add-to-list 'package-archives '(\"melpa\" . \"https://melpa.org/packages/\") t)" \
-              --eval "(package-initialize)" \
-              --eval "(unless (package-installed-p 'magit) (package-refresh-contents) (package-install 'magit))" \
-              --eval "(unless (package-installed-p 'transient) (package-install 'transient))"
-
-    - name: Run tests
-      run: |
-        emacs -batch -Q -L . -l ert -l cl-lib -l link-to-remote.el -l link-to-remote-test.el -f ert-run-tests-batch-and-exit
-
-    - name: Byte compile
-      run: |
-        emacs -batch -L . --eval "(setq byte-compile-error-on-warn t)" -f batch-byte-compile link-to-remote.el
-
-  lint:
-    runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
 
@@ -50,12 +15,24 @@ jobs:
       with:
         version: 29.1
 
-    - name: Lint package
+    - name: Install dependencies
       run: |
         emacs -batch --eval "(require 'package)" \
               --eval "(add-to-list 'package-archives '(\"melpa\" . \"https://melpa.org/packages/\") t)" \
               --eval "(package-initialize)" \
-              --eval "(unless (package-installed-p 'package-lint) (package-refresh-contents) (package-install 'package-lint))" \
-              -l package-lint \
-              --eval "(setq package-lint-main-file \"link-to-remote.el\")" \
-              -f package-lint-batch-and-exit link-to-remote.el
+              --eval "(package-refresh-contents)" \
+              --eval "(package-install 'magit)" \
+              --eval "(package-install 'transient)" \
+              --eval "(package-install 'package-lint)"
+
+    - name: Run tests
+      run: |
+        emacs -batch -L . -l ert -l link-to-remote.el -l link-to-remote-test.el -f ert-run-tests-batch-and-exit
+
+    - name: Byte compile
+      run: |
+        emacs -batch -L . -f batch-byte-compile link-to-remote.el
+
+    - name: Lint package
+      run: |
+        emacs -batch -l package-lint -f package-lint-batch-and-exit link-to-remote.el

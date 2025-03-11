@@ -2,7 +2,7 @@
 
 ;; Author: John Sigman
 ;; Version: 0.1.0
-;; Package-Requires: ((emacs "26.1") (magit "3.0") (transient "0.3.0") (cl-lib "0.5"))
+;; Package-Requires: ((emacs "29.1") (magit "3.0") (transient "0.3.0"))
 ;; Keywords: tools, git, convenience
 ;; URL: https://github.com/jsigman/link-to-remote
 
