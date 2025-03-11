@@ -14,6 +14,7 @@
 
 (require 'magit)
 (require 'transient)
+(require 'browse-url)
 
 (defun link-to-remote--get-repo-url ()
   "Get the repository's remote URL in web-friendly format."
@@ -66,7 +67,7 @@ If WITHOUT-LINE is non-nil, don't include line number information."
          (line-info (unless without-line (link-to-remote--get-line-info))))
     (format "%s/blob/%s/%s%s" repo-url branch file-path (or line-info ""))))
 
-;;;###autoload (autoload 'link-to-remote "link-to-remote" nil t)
+;;;###autoload
 (transient-define-prefix link-to-remote ()
   "Open or manage a link to the current file on its remote repository."
   ["Link to Remote"
@@ -87,21 +88,25 @@ If WITHOUT-LINE is non-nil, don't include line number information."
       ('plain (kill-new url) (message "Plain link copied to kill ring: %s" url))
       (_ (error "Unknown action: %s" action)))))
 
+;;;###autoload
 (defun link-to-remote-open ()
   "Open the current file in the default browser."
   (interactive)
   (link-to-remote--dispatch 'open))
 
+;;;###autoload
 (defun link-to-remote-echo ()
   "Echo the current file's remote URL to the message buffer."
   (interactive)
   (link-to-remote--dispatch 'echo))
 
+;;;###autoload
 (defun link-to-remote-kill ()
   "Copy the current file's remote URL to the kill ring."
   (interactive)
   (link-to-remote--dispatch 'kill))
 
+;;;###autoload
 (defun link-to-remote-kill-plain ()
   "Copy the current file's remote URL without line info to the kill ring."
   (interactive)

@@ -1,6 +1,7 @@
 ;;; link-to-remote-test.el --- Tests for link-to-remote -*- lexical-binding: t; -*-
 
 (require 'ert)
+(require 'cl-lib)
 (require 'link-to-remote)
 
 (ert-deftest link-to-remote--get-repo-url-github-ssh-test ()
