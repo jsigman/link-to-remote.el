@@ -1,10 +1,12 @@
-# Link to Remote
+#+TITLE: Link to Remote
+#+AUTHOR: Jackson Sigman
+#+LANGUAGE: en
 
 An Emacs package to link the current file to its remote repository URL with branch selection and multiple actions.
 
-## Features
+* Features
 
-- Interactive branch selection via `completing-read`
+- Interactive branch selection via =completing-read=
 - Multiple actions via a Transient menu:
   - Open link in browser
   - Echo link to message buffer
@@ -12,61 +14,69 @@ An Emacs package to link the current file to its remote repository URL with bran
   - Copy plain link (without line numbers) to kill ring
 - Support for line numbers and line ranges (when region is active)
 - Works with GitHub, GitLab, and Bitbucket repositories
-- Cross-platform browser support via `browse-url`
+- Cross-platform browser support via =browse-url=
 
-## Installation
+* Installation
 
-### Manual
+** Manual
 
 1. Clone this repo.
-2. Add to your `load-path`:
-   ```emacs-lisp
+2. Add to your =load-path=:
+   #+begin_src emacs-lisp
    (add-to-list 'load-path "~/path/to/link-to-remote")
    (require 'link-to-remote)
-   ```
+   #+end_src
 
-### With `use-package`
+** With use-package
 
-```emacs-lisp
+#+begin_src emacs-lisp
 (use-package link-to-remote
   :ensure nil  ; until available on MELPA
   :load-path "~/path/to/link-to-remote"
   :bind ("C-c l" . link-to-remote))
-```
+#+end_src
 
-## Usage
+** Using straight.el with use-package
 
-1. `M-x link-to-remote` opens a Transient menu.
+#+begin_src emacs-lisp
+(use-package link-to-remote
+  :straight (:host github :repo "jsigman/link-to-remote.el")
+  :bind ("C-c l" . link-to-remote))
+#+end_src
+
+* Usage
+
+1. =M-x link-to-remote= opens a Transient menu.
 2. Choose an action:
-   - `o`: Open link in browser
-   - `e`: Echo link to messages
-   - `k`: Copy link to kill ring
-   - `p`: Copy plain link (without line numbers) to kill ring
+   - =o=: Open link in browser
+   - =e=: Echo link to messages
+   - =k=: Copy link to kill ring
+   - =p=: Copy plain link (without line numbers) to kill ring
 3. Select a branch when prompted (defaults to current branch)
 
-## Examples
+* Examples
 
-- If you have a region selected, the link will include the line range (e.g., `#L10-L15`)
-- Otherwise, it links to the current line (e.g., `#L42`)
+- If you have a region selected, the link will include the line range (e.g., =#L10-L15=)
+- Otherwise, it links to the current line (e.g., =#L42=)
 
-## Dependencies
+* Dependencies
 
-- Emacs 26.1+
+- Emacs 29.1+
 - Magit 3.0+
 - Transient 0.3.0+
 
-## Development
+* Development
 
-### Running Tests
+** Running Tests
 
-```sh
+#+begin_src sh
 emacs -Q -batch -L . -l ert -l link-to-remote.el -l link-to-remote-test.el -f ert-run-tests-batch-and-exit
-```
+#+end_src
 
-### Contributing
+** Contributing
 
 Contributions are welcome! Please feel free to open an issue or submit a pull request.
 
-## License
+* License
 
 This project is licensed under the GPL-3.0 License - see the LICENSE file for details.
