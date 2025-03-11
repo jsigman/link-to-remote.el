@@ -1,5 +1,5 @@
 #+TITLE: Link to Remote
-#+AUTHOR: Jackson Sigman
+#+AUTHOR: John Sigman
 #+LANGUAGE: en
 
 An Emacs package to link the current file to its remote repository URL with branch selection and multiple actions.
