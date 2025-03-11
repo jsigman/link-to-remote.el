@@ -1,11 +1,20 @@
-# Compiled
+# Emacs backup files
+*~
+\#*\#
+.\#*
+
+# Compiled Emacs Lisp files
 *.elc
 
-# Packaging
-.cask
+# Package builds
+*.tar
 
-# Backup files
-*~
+# Directories used by package managers
+.cask/
+elpa/
 
-# Undo-tree save-files
-*.~undo-tree
+# Undo-tree save files
+*.~undo-tree~
+
+# macOS files
+.DS_Store
