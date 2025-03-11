@@ -1,0 +1,34 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Set up Emacs
+      uses: purcell/setup-emacs@master
+      with:
+        version: 29.1
+
+    - name: Install dependencies
+      run: |
+        emacs -Q --batch \
+              --eval "(require 'package)" \
+              --eval "(add-to-list 'package-archives '(\"melpa\" . \"https://melpa.org/packages/\") t)" \
+              --eval "(package-initialize)" \
+              --eval "(package-refresh-contents)" \
+              --eval "(package-install 'magit)" \
+              --eval "(package-install 'transient)"
+
+    - name: Test
+      run: |
+        echo "Running basic syntax check..."
+        emacs -Q --batch -L . \
+              --eval "(require 'package)" \
+              --eval "(package-initialize)" \
+              -f batch-byte-compile link-to-remote.el
