@@ -70,10 +70,14 @@ If WITHOUT-LINE is non-nil, don't include line number information."
          (file-path (link-to-remote--get-file-path))
          (line-info
           (unless without-line
-            (link-to-remote--get-line-info))))
+            (link-to-remote--get-line-info)))
+         ;; Strip remote prefix (e.g., "origin/main" -> "main")
+         (clean-branch (if (string-match "^[^/]+/\\(.+\\)$" branch)
+                           (match-string 1 branch)
+                         branch)))
     (format "%s/blob/%s/%s%s"
             repo-url
-            branch
+            clean-branch
             file-path
             (or line-info ""))))
 
