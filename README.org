@@ -16,6 +16,29 @@ An Emacs package to link the current file to its remote repository URL with bran
 - Works with GitHub, GitLab, and Bitbucket repositories
 - Cross-platform browser support via =browse-url=
 
+* Screenshots
+
+** Transient Menu
+When you run =M-x link-to-remote=, a transient menu appears with available actions:
+
+#+ATTR_HTML: :width 600px
+#+ATTR_ORG: :width 600
+[[./images/at_transient.png]]
+
+** Branch Selection
+Select the remote branch to link to:
+
+#+ATTR_HTML: :width 600px
+#+ATTR_ORG: :width 600
+[[./images/branch_selection.png]]
+
+** Browser Navigation
+When choosing "Open in browser", it navigates directly to the exact line in your repository:
+
+#+ATTR_HTML: :width 800px
+#+ATTR_ORG: :width 800
+[[./images/opens_browser.png]]
+
 * Installation
 
 ** Manual

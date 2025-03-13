@@ -45,13 +45,10 @@
       (error "Not in a Git repository or no file visited"))))
 
 (defun link-to-remote--get-branch ()
-  "Prompt for a remote branch to link to, defaulting to origin/HEAD or current branch."
-  (let* ((remote-branches (magit-list-remote-branch-names))
-         (default-branch (or (magit-get-upstream-branch)
-                             (concat "origin/" (magit-get-current-branch))
-                             (car remote-branches))))
+  "Prompt for a remote branch to link to."
+  (let ((remote-branches (magit-list-remote-branch-names)))
     (completing-read "Select remote branch: " remote-branches
-                     nil t default-branch)))
+                     nil nil nil)))
 
 (defun link-to-remote--get-line-info ()
   "Get line number or range if region is active."
