@@ -16,6 +16,9 @@
 (require 'transient)
 (require 'browse-url)
 
+(defvar link-to-remote-include-line-numbers t
+  "Whether to include line numbers in generated links.")
+
 (defun link-to-remote--get-repo-url ()
   "Get the repository's remote URL in web-friendly format."
   (let ((remote (magit-get "remote" "origin" "url")))
@@ -83,25 +86,36 @@ If WITHOUT-LINE is non-nil, don't include line number information."
  link-to-remote
  ()
  "Open or manage a link to the current file on its remote repository."
- ["Link to Remote"
-  ("o" "Open in browser" link-to-remote-open)
-  ("e" "Echo to messages" link-to-remote-echo)
-  ("k" "Copy to kill ring" link-to-remote-kill)
-  ("p" "Copy plain URL (no line numbers)" link-to-remote-kill-plain)])
+ [["Options"
+   ("-l" "Include line numbers" link-to-remote-toggle-line-numbers
+    :description link-to-remote--line-numbers-status)]
+  ["Actions"
+   ("o" "Open in browser" link-to-remote-open)
+   ("e" "Echo to messages" link-to-remote-echo)
+   ("k" "Copy to kill ring" link-to-remote-kill)]])
+
+(defun link-to-remote--line-numbers-status ()
+  "Return a description for the line numbers toggle state."
+  (if link-to-remote-include-line-numbers
+      "Include line numbers [x]"
+    "Include line numbers [ ]"))
+
+(defun link-to-remote-toggle-line-numbers ()
+  "Toggle whether to include line numbers in links."
+  (interactive)
+  (setq link-to-remote-include-line-numbers
+        (not link-to-remote-include-line-numbers)))
 
 (defun link-to-remote--dispatch (action)
   "Dispatch ACTION on the constructed URL with branch selection."
   (let* ((branch (link-to-remote--get-branch))
-         (without-line (eq action 'plain))
+         (without-line (not link-to-remote-include-line-numbers))
          (url (link-to-remote--build-url branch without-line)))
     (pcase action
       ('open (browse-url url))
       ('echo (message "Link: %s" url))
       ('kill
        (kill-new url) (message "Link copied to kill ring: %s" url))
-      ('plain
-       (kill-new url)
-       (message "Plain link copied to kill ring: %s" url))
       (_ (error "Unknown action: %s" action)))))
 
 ;;;###autoload
@@ -121,12 +135,6 @@ If WITHOUT-LINE is non-nil, don't include line number information."
   "Copy the current file's remote URL to the kill ring."
   (interactive)
   (link-to-remote--dispatch 'kill))
-
-;;;###autoload
-(defun link-to-remote-kill-plain ()
-  "Copy the current file's remote URL without line info to the kill ring."
-  (interactive)
-  (link-to-remote--dispatch 'plain))
 
 (provide 'link-to-remote)
 ;;; link-to-remote.el ends here

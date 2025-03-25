@@ -97,4 +97,12 @@
             ((symbol-function 'line-number-at-pos) (lambda (pos) 42)))
     (should (string= (link-to-remote--get-line-info) "#L42"))))
 
+(ert-deftest link-to-remote-toggle-line-numbers-test ()
+  "Test toggling the line numbers flag."
+  (let ((link-to-remote-include-line-numbers t))
+    (link-to-remote-toggle-line-numbers)
+    (should-not link-to-remote-include-line-numbers)
+    (link-to-remote-toggle-line-numbers)
+    (should link-to-remote-include-line-numbers)))
+
 (provide 'link-to-remote-test)

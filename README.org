@@ -7,11 +7,12 @@ An Emacs package to link the current file to its remote repository URL with bran
 * Features
 
 - Interactive branch selection via =completing-read=
+- Toggle options:
+  - Include/exclude line numbers in generated links
 - Multiple actions via a Transient menu:
   - Open link in browser
   - Echo link to message buffer
   - Copy link to kill ring
-  - Copy plain link (without line numbers) to kill ring
 - Support for line numbers and line ranges (when region is active)
 - Works with GitHub, GitLab, and Bitbucket repositories
 - Cross-platform browser support via =browse-url=
@@ -70,12 +71,13 @@ When choosing "Open in browser", it navigates directly to the exact line in your
 * Usage
 
 1. =M-x link-to-remote= opens a Transient menu.
-2. Choose an action:
+2. Toggle options if needed:
+   - =-l=: Toggle line number inclusion in links
+3. Choose an action:
    - =o=: Open link in browser
    - =e=: Echo link to messages
    - =k=: Copy link to kill ring
-   - =p=: Copy plain link (without line numbers) to kill ring
-3. Select a branch when prompted (defaults to current branch)
+4. Select a branch when prompted (defaults to current branch)
 
 * Examples
 
