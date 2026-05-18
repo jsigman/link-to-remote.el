@@ -81,7 +81,6 @@ If WITHOUT-LINE is non-nil, don't include line number information."
             file-path
             (or line-info ""))))
 
-;;;###autoload
 (transient-define-prefix
  link-to-remote
  ()
